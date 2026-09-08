@@ -104,8 +104,10 @@ try {
         $dateStr = $file.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
         $fileSizeKb = [Math]::Round($file.Length / 1KB, 1)
 
-        $latestClass = if ($isFirst) { " is-latest" } else { "" }
-        $badgeHtml = if ($isFirst) { '<span class="badge-new">NEW</span>' } else { '' }
+        # 이번 배포에서 새로 추가/수정된 모든 보고서에 NEW 뱃지 부여
+        $isNewReport = ($uncommittedFiles -contains $file.Name)
+        $latestClass = if ($isNewReport) { " is-latest" } else { "" }
+        $badgeHtml = if ($isNewReport) { '<span class="badge-new">NEW</span>' } else { '' }
 
         $card = '      <div class="report-card' + $latestClass + '">' + "`n"
         $card += '        <div class="card-left">' + "`n"
