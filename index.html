@@ -3,8 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Report Archive</title>
+  <title>보고서 아카이브 | HTML Report Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-body: #0a0d14;
+      --bg-surface: #121824;
+      --bg-card: #182030;
+      --bg-card-hover: #1f2a3f;
+      --border-subtle: #242f44;
+      --border-accent: rgba(56, 189, 248, 0.4);
+      --primary: #38bdf8;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --accent: #34d399;
+      --accent-glow: rgba(52, 211, 153, 0.15);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --badge-bg: rgba(56, 189, 248, 0.12);
+      --badge-text: #38bdf8;
+      --badge-new-bg: rgba(52, 211, 153, 0.15);
+      --badge-new-text: #34d399;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -12,85 +36,320 @@
     }
 
     body {
-      background-color: #0d1117;
-      color: #c9d1d9;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, rgba(24, 32, 48, 0.8), rgba(18, 24, 36, 0.95));
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-top {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 24px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 12px;
     }
 
-    .card {
-      background-color: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 48px 40px;
-      max-width: 480px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    .status-badge {
+    .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background-color: rgba(56, 139, 253, 0.15);
-      color: #58a6ff;
+      background-color: var(--badge-bg);
+      color: var(--badge-text);
       font-size: 13px;
       font-weight: 600;
-      padding: 4px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(56, 139, 253, 0.3);
+      border: 1px solid rgba(56, 189, 248, 0.25);
     }
 
     .status-dot {
       width: 8px;
       height: 8px;
-      background-color: #2ea043;
+      background-color: var(--accent);
       border-radius: 50%;
-      display: inline-block;
-      box-shadow: 0 0 6px #2ea043;
+      box-shadow: 0 0 8px var(--accent);
     }
 
     h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #f0f6fc;
-      margin-bottom: 12px;
+      font-size: 30px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #8b949e;
-      margin-bottom: 28px;
+    .header-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 650px;
     }
 
-    .divider {
-      border-top: 1px solid #21262d;
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      margin-top: 24px;
       padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+
+    .stat-item strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    /* Section Title */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 0 4px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Report Card List */
+    .report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .report-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+    }
+
+    .report-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .report-card.is-latest {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: linear-gradient(135deg, rgba(24, 32, 48, 0.9), rgba(18, 24, 36, 0.9));
+    }
+
+    .card-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .badge-new {
+      background: var(--badge-new-bg);
+      color: var(--badge-new-text);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      letter-spacing: 0.5px;
+    }
+
+    .card-date {
+      color: var(--text-dim);
+    }
+
+    .card-filename {
+      color: var(--text-dim);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 12px;
-      color: #484f58;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-open {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--primary);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .report-card:hover .btn-open {
+      background: var(--primary);
+      color: #030712;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--primary);
+    }
+
+    @media (max-width: 640px) {
+      .report-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .card-right {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .card-title {
+        white-space: normal;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="status-badge">
-      <span class="status-dot"></span> Online
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <span class="badge"><span class="status-dot"></span> GitHub Pages Active</span>
+        <span style="font-size: 13px; color: var(--text-dim);">ooklllo/html_reports</span>
+      </div>
+      <h1>📊 HTML Report Hub</h1>
+      <p class="header-desc">
+        생성된 HTML 분석 및 워크플로우 보고서 저장소입니다. 최신 보고서가 자동으로 상단에 업데이트됩니다.
+      </p>
+      <div class="stats-bar">
+        <div class="stat-item">총 보고서 수: <strong id="total-reports">2</strong>개</div>
+        <div class="stat-item">최근 업데이트: <strong id="last-updated">2026-09-09</strong></div>
+      </div>
+    </header>
+
+    <div class="section-header">
+      <h2 class="section-title">최신 보고서 목록</h2>
     </div>
-    <h1>Report Repository</h1>
-    <p>
-      이 페이지는 보고서 저장소의 메인 엔드포인트입니다.<br>
-      개별 보고서는 전달받은 고유 URL을 통해 열람하실 수 있습니다.
-    </p>
-    <div class="divider">
-      Private / Direct URL Access Only
+
+    <!-- REPORT_LIST_START -->
+    <div class="report-list" id="report-list">
+      <a href="test-workflow-demo.html" class="report-card is-latest">
+        <div class="card-left">
+          <div class="card-meta">
+            <span class="badge-new">LATEST</span>
+            <span class="card-date">2026-09-09</span>
+            <span class="card-filename">test-workflow-demo.html (0.4KB)</span>
+          </div>
+          <div class="card-title">자동 배포 테스트 보고서 샘플</div>
+        </div>
+        <div class="card-right">
+          <span class="btn-open">보고서 열기 →</span>
+        </div>
+      </a>
+      <a href="chatgpt-web-mcp-workflow-report.html" class="report-card">
+        <div class="card-left">
+          <div class="card-meta">
+            
+            <span class="card-date">2026-09-09</span>
+            <span class="card-filename">chatgpt-web-mcp-workflow-report.html (15KB)</span>
+          </div>
+          <div class="card-title">ChatGPT MCP 공식 연동 및 '웹쫀쿠' 분석 보고서 (Dark Mode)</div>
+        </div>
+        <div class="card-right">
+          <span class="btn-open">보고서 열기 →</span>
+        </div>
+      </a>
     </div>
+    <!-- REPORT_LIST_END -->
+
+    <footer>
+      <p>Report Hub Powered by GitHub Pages · <a href="https://github.com/ooklllo/html_reports" target="_blank">Repository</a></p>
+    </footer>
   </div>
 </body>
 </html>
