@@ -16,7 +16,7 @@ try {
 
     Write-Host ""
     Write-Host "========================================================" -ForegroundColor DarkCyan
-    Write-Host "   [HTML Report Hub] 보고서 자동 배포 시스템" -ForegroundColor Cyan
+    Write-Host "   📊 [HTML Report Hub] 보고서 자동 배포 시스템" -ForegroundColor Cyan
     Write-Host "========================================================" -ForegroundColor DarkCyan
     Write-Host ""
 
@@ -38,7 +38,10 @@ try {
         Write-Host "   - 현재 폴더에 배포할 HTML 보고서 파일이 없습니다." -ForegroundColor Yellow
         Write-Host "   - index.html 페이지를 브라우저로 엽니다."
         Start-Process $indexUrl
-        return
+        Write-Host ""
+        Write-Host "5초 후 창이 자동으로 종료됩니다..." -ForegroundColor DarkGray
+        Start-Sleep -Seconds 5
+        [System.Environment]::Exit(0)
     }
 
     # Git 상태 확인하여 신규/수정된 HTML 파일 목록 식별
@@ -159,6 +162,7 @@ try {
     Write-Host "[5/6] 공유 링크 클립보드 복사..." -ForegroundColor Cyan
     $clipboardText = ""
     if ($newReportUrls.Count -gt 0) {
+        # 새 보고서가 여러 개일 경우 줄바꿈으로 모두 합쳐서 복사
         $clipboardText = $newReportUrls -join "`r`n"
         Write-Host "   - 새 보고서 링크 ($($newReportUrls.Count)개)가 클립보드에 복사되었습니다! (Ctrl+V 로 바로 붙여넣기 가능)" -ForegroundColor Green
         foreach ($u in $newReportUrls) {
@@ -208,5 +212,8 @@ try {
     Write-Host " [ERROR] 배포 도중 오류가 발생했습니다!" -ForegroundColor Red
     Write-Host " 내용: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host "========================================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "문제가 발생하여 창을 유지합니다. 확인 후 아무 키나 누르시면 창이 닫힙니다..." -ForegroundColor Yellow
+    [void][System.Console]::ReadKey($true)
     [System.Environment]::Exit(1)
 }
