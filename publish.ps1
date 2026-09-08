@@ -200,7 +200,7 @@ try {
     }
     Write-Host ""
 
-    exit 0
+    [System.Environment]::Exit(0)
 
 } catch {
     Write-Host ""
@@ -208,5 +208,5 @@ try {
     Write-Host " [ERROR] 배포 도중 오류가 발생했습니다!" -ForegroundColor Red
     Write-Host " 내용: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host "========================================================" -ForegroundColor Red
-    exit 1
+    [System.Environment]::Exit(1)
 }
