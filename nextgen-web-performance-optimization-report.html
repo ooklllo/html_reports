@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>차세대 웹 애플리케이션 성능 최적화 및 렌더링 전략 보고서</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #111827;
+      --card: #192237;
+      --border: #23304c;
+      --primary: #34d399;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 860px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #13232c, #0d1520);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 30px;
+    }
+    .tag {
+      display: inline-block;
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin-bottom: 10px; color: #fff; }
+    .meta { font-size: 13px; color: var(--text-muted); }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h2 { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+    p { color: #cbd5e1; font-size: 15px; margin-bottom: 12px; }
+    .metrics { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+    .metric-badge {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      flex: 1;
+      min-width: 180px;
+    }
+    .metric-value { font-size: 22px; font-weight: 800; color: #34d399; font-variant-numeric: tabular-nums; }
+    .metric-name { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="tag">PERFORMANCE REPORT</span>
+      <h1>차세대 웹 애플리케이션 성능 최적화 및 렌더링 전략 보고서</h1>
+      <div class="meta">작성일: 2026-09-09 · 분류: Web Vitals & Optimization · 상태: 분석 완료</div>
+    </header>
+
+    <div class="section">
+      <h2>1. 목표 지표 (Core Web Vitals)</h2>
+      <div class="metrics">
+        <div class="metric-badge">
+          <div class="metric-value">&lt; 1.2s</div>
+          <div class="metric-name">LCP (최대 콘텐츠 렌더링)</div>
+        </div>
+        <div class="metric-badge">
+          <div class="metric-value">&lt; 50ms</div>
+          <div class="metric-name">INP (다음 상호작용 지연)</div>
+        </div>
+        <div class="metric-badge">
+          <div class="metric-value">0.01</div>
+          <div class="metric-name">CLS (누적 레이아웃 이동)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. 핵심 최적화 기법</h2>
+      <p>전체 애플리케이션 번들 크기 축소와 스트리밍 SSR(Server-Side Rendering) 및 아일랜드 아키텍처(Island Architecture)를 결합하여 초기 로딩 체감 속도를 극대화합니다.</p>
+      <p>또한 브라우저 캐싱과 ETag 헤더를 활용하여 정적 리소스에 대한 재요청 오버헤드를 제로화합니다.</p>
+    </div>
+  </div>
+</body>
+</html>

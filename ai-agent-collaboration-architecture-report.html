@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 멀티 에이전트 협업 아키텍처 및 워크플로우 분석 보고서</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #131b2e;
+      --card: #1b253b;
+      --border: #263554;
+      --primary: #38bdf8;
+      --accent: #818cf8;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 860px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 30px;
+    }
+    .tag {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    h1 { font-size: 26px; font-weight: 800; margin-bottom: 10px; color: #fff; }
+    .meta { font-size: 13px; color: var(--text-muted); }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h2 { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+    p { color: #cbd5e1; font-size: 15px; margin-bottom: 12px; }
+    ul { padding-left: 20px; color: #cbd5e1; font-size: 14px; }
+    li { margin-bottom: 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
+    .grid-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .grid-card h3 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .grid-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="tag">ARCHITECTURE REPORT</span>
+      <h1>AI 멀티 에이전트 협업 아키텍처 및 워크플로우 분석 보고서</h1>
+      <div class="meta">작성일: 2026-09-09 · 분류: AI System Design · 상태: 분석 완료</div>
+    </header>
+
+    <div class="section">
+      <h2>1. 개요 및 배경</h2>
+      <p>단일 대규모 언어 모델(LLM)의 컨텍스트 한계와 복합 작업 처리 능력을 극복하기 위해, 역할 기반 다중 에이전트 협업 시스템(Multi-Agent Collaboration System)이 차세대 엔터프라이즈 솔루션의 핵심 표준으로 자리잡고 있습니다.</p>
+    </div>
+
+    <div class="section">
+      <h2>2. 핵심 컴포넌트 구성</h2>
+      <div class="grid">
+        <div class="grid-card">
+          <h3>🎯 Planner Agent</h3>
+          <p>전체 목표를 세부 작업(Task)으로 분할하고 의존 관계를 정의하는 총괄 기획자</p>
+        </div>
+        <div class="grid-card">
+          <h3>⚡ Executor Agent</h3>
+          <p>도구(Tool) 및 MCP API를 호출하여 단위 작업을 신속하게 실행하는 실무자</p>
+        </div>
+        <div class="grid-card">
+          <h3>🔍 Critic / QA Agent</h3>
+          <p>실행 결과물의 무결성과 안정성을 검증하고 피드백 루프를 구동하는 검수자</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>3. 향후 권장 워크플로우</h2>
+      <ul>
+        <li>컨텍스트 윈도우 오염 방지를 위한 하위 에이전트(Sub-agent) 격리 실행</li>
+        <li>결과 검증 실패 시 자동 롤백 및 파라미터 재보정 루프 구축</li>
+        <li>비동기 메시징 큐 기반의 유연한 상태 관리 도입</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
