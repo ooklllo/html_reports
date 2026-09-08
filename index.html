@@ -379,6 +379,59 @@
       color: var(--primary);
     }
 
+    /* 우상단 경과 시간 타이머 */
+    .page-timer {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      background: rgba(18, 24, 36, 0.85);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(12px);
+      padding: 8px 16px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      color: var(--text-muted);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      z-index: 900;
+      transition: all 0.2s ease;
+    }
+
+    .page-timer:hover {
+      border-color: var(--border-accent);
+      color: var(--text-main);
+    }
+
+    .timer-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary);
+      animation: pulseTimer 1.5s infinite;
+    }
+
+    @keyframes pulseTimer {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
+    }
+
+    .timer-label {
+      font-weight: 500;
+      color: var(--text-dim);
+    }
+
+    .timer-display {
+      color: #38bdf8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+      font-size: 14px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.5px;
+    }
+
     @media (max-width: 680px) {
       .report-card {
         flex-direction: column;
@@ -391,10 +444,22 @@
       .card-title {
         white-space: normal;
       }
+      .page-timer {
+        position: static;
+        margin-bottom: 16px;
+        align-self: flex-start;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- 우상단 페이지 열람 경과 시간 타이머 -->
+  <div id="page-timer" class="page-timer" title="페이지 열람 경과 시간 (최대 60분)">
+    <span class="timer-dot"></span>
+    <span class="timer-label">접속 시간</span>
+    <strong id="timer-display" class="timer-display">00:00</strong>
+  </div>
+
   <div class="container">
     <header>
       <div class="header-top">
@@ -407,7 +472,7 @@
       </p>
       <div class="stats-bar">
         <div class="stat-item">총 보고서 수: <strong id="total-reports">4</strong>개</div>
-        <div class="stat-item">최근 업데이트: <strong id="last-updated">2026-09-09 03:26:06</strong></div>
+        <div class="stat-item">최근 업데이트: <strong id="last-updated">2026-09-09 03:29:10</strong></div>
       </div>
     </header>
 
@@ -425,10 +490,9 @@
 
     <!-- REPORT_LIST_START -->
     <div class="report-list" id="report-list">
-      <div class="report-card is-latest">
+      <div class="report-card">
         <div class="card-left">
           <div class="card-meta">
-            <span class="badge-new">NEW</span>
             <span class="card-date">2026-09-09 03:07:11</span>
             <span class="card-filename">test-report-03-security-audit.html (1KB)</span>
           </div>
@@ -442,10 +506,9 @@
           <a href="test-report-03-security-audit.html" class="btn-open">보고서 열기 →</a>
         </div>
       </div>
-      <div class="report-card is-latest">
+      <div class="report-card">
         <div class="card-left">
           <div class="card-meta">
-            <span class="badge-new">NEW</span>
             <span class="card-date">2026-09-09 03:07:06</span>
             <span class="card-filename">test-report-02-performance-metrics.html (1KB)</span>
           </div>
@@ -459,10 +522,9 @@
           <a href="test-report-02-performance-metrics.html" class="btn-open">보고서 열기 →</a>
         </div>
       </div>
-      <div class="report-card is-latest">
+      <div class="report-card">
         <div class="card-left">
           <div class="card-meta">
-            <span class="badge-new">NEW</span>
             <span class="card-date">2026-09-09 03:07:01</span>
             <span class="card-filename">test-report-01-market-analysis.html (1KB)</span>
           </div>
@@ -551,6 +613,32 @@
         toast.classList.remove('show');
       }, 3000);
     }
+
+    // 우상단 경과 시간 타이머 (초 단위 카운트, 최대 60분 도달 시 멈춤)
+    (function initTimer() {
+      let elapsedSeconds = 0;
+      const MAX_SECONDS = 3600; // 60분 (3600초)
+      const timerDisplay = document.getElementById('timer-display');
+      const timerDot = document.querySelector('.timer-dot');
+
+      const timerId = setInterval(function() {
+        elapsedSeconds++;
+        if (elapsedSeconds >= MAX_SECONDS) {
+          elapsedSeconds = MAX_SECONDS;
+          clearInterval(timerId);
+          if (timerDot) {
+            timerDot.style.animation = 'none';
+            timerDot.style.backgroundColor = '#64748b';
+            timerDot.style.boxShadow = 'none';
+          }
+        }
+
+        const mins = Math.floor(elapsedSeconds / 60);
+        const secs = elapsedSeconds % 60;
+        const formatted = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+        timerDisplay.textContent = formatted;
+      }, 1000);
+    })();
   </script>
 </body>
 </html>
