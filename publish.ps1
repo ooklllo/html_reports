@@ -44,15 +44,21 @@ try {
         [System.Environment]::Exit(0)
     }
 
-    # Git 상태 확인하여 신규/수정된 HTML 파일 목록 식별
+    # Git 상태 확인하여 신규/수정/삭제된 HTML 파일 목록 식별
     $gitStatusLines = git status --porcelain
     $uncommittedFiles = @()
+    $deletedFiles = @()
     foreach ($line in $gitStatusLines) {
         if ($line.Length -ge 4) {
+            $status = $line.Substring(0, 2)
             $filePath = $line.Substring(3).Trim().Replace('"', '')
             $fileName = [System.IO.Path]::GetFileName($filePath)
             if ($fileName.EndsWith(".html") -and $fileName -ne "index.html") {
-                $uncommittedFiles += $fileName
+                if ($status -match 'D') {
+                    $deletedFiles += $fileName
+                } else {
+                    $uncommittedFiles += $fileName
+                }
             }
         }
     }
@@ -64,8 +70,15 @@ try {
             Write-Host "      * $f" -ForegroundColor Green
             $newReportUrls += "$baseUrl/$f"
         }
-    } else {
-        Write-Host "   -> 새로 추가되거나 수정된 보고서가 없습니다. (전체 목록 동기화 진행)" -ForegroundColor Gray
+    }
+    if ($deletedFiles.Count -gt 0) {
+        Write-Host "   -> 삭제 감지된 보고서 ($($deletedFiles.Count)개):" -ForegroundColor Red
+        foreach ($f in $deletedFiles) {
+            Write-Host "      * $f (목록 및 원격 저장소에서 제거됨)" -ForegroundColor Red
+        }
+    }
+    if ($uncommittedFiles.Count -eq 0 -and $deletedFiles.Count -eq 0) {
+        Write-Host "   -> 새로 추가되거나 삭제된 보고서가 없습니다. (전체 목록 동기화 진행)" -ForegroundColor Gray
     }
 
     Write-Host "[3/6] index.html 보고서 목록 갱신 (최신순 정렬)..." -ForegroundColor Cyan
@@ -137,9 +150,16 @@ try {
 
     # 커밋 메시지 구성
     $nowStr = Get-Date -Format 'yyyy-MM-dd HH:mm'
+    $actions = @()
     if ($uncommittedFiles.Count -gt 0) {
-        $filesStr = ($uncommittedFiles -join ", ")
-        $commitMsg = "Add/Update report: $filesStr ($nowStr)"
+        $actions += "Add/Update: " + ($uncommittedFiles -join ", ")
+    }
+    if ($deletedFiles.Count -gt 0) {
+        $actions += "Delete: " + ($deletedFiles -join ", ")
+    }
+
+    if ($actions.Count -gt 0) {
+        $commitMsg = ($actions -join " / ") + " ($nowStr)"
     } else {
         $commitMsg = "Refresh report index ($nowStr)"
     }
