@@ -91,7 +91,7 @@ try {
         $fileSizeKb = [Math]::Round($file.Length / 1KB, 1)
 
         $latestClass = if ($isFirst) { " is-latest" } else { "" }
-        $badgeHtml = if ($isFirst) { '<span class="badge-new">LATEST</span>' } else { '' }
+        $badgeHtml = if ($isFirst) { '<span class="badge-new">NEW</span>' } else { '' }
 
         $card = '      <a href="' + $file.Name + '" class="report-card' + $latestClass + '">' + "`n"
         $card += '        <div class="card-left">' + "`n"
