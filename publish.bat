@@ -1,19 +1,12 @@
 @echo off
-setlocal
 cd /d "%~dp0"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0publish.ps1"
-set "EXIT_CODE=%errorlevel%"
-
-if %EXIT_CODE% neq 0 (
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0publish.ps1"
+if %errorlevel% neq 0 (
     echo.
     echo ========================================================
-    echo  [!] Error occurred during publication. (Code: %EXIT_CODE%)
+    echo  [!] Error occurred. (Exit Code: %errorlevel%)
     echo ========================================================
-    echo.
     pause
-    exit /b %EXIT_CODE%
+    exit /b %errorlevel%
 )
-
-timeout /t 5
 exit /b 0
