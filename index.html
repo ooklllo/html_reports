@@ -236,14 +236,46 @@
       animation: spinRefresh 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
-    @keyframes spinRefresh {
-      100% { transform: rotate(360deg); }
-    }
-
     .control-divider {
       width: 1px;
       height: 18px;
       background-color: var(--border-subtle);
+    }
+
+    /* 마지막 확인 시각 뱃지 (실시간 갱신 피드백) */
+    .last-sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .last-sync-badge.flash {
+      color: var(--primary);
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .sync-pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #475569;
+      transition: all 0.25s ease;
+    }
+
+    .last-sync-badge.flash .sync-pulse {
+      background-color: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
     }
 
     /* 주기 선택 세그먼트 (1초, 3초, 5초) */
@@ -683,7 +715,7 @@
       </p>
       <div class="stats-bar">
         <div class="stat-item">총 보고서 수: <strong id="total-reports">2</strong>개</div>
-        <div class="stat-item">최근 업데이트: <strong id="last-updated">2026-09-09 06:50:31</strong></div>
+        <div class="stat-item">최근 업데이트: <strong id="last-updated">2026-09-09 06:54:51</strong></div>
       </div>
     </header>
 
@@ -707,6 +739,12 @@
           </svg>
           <span id="refresh-btn-text">새로고침</span>
         </button>
+
+        <!-- 마지막 확인 시각 (실시간 피드백) -->
+        <div class="last-sync-badge" id="last-sync-badge" title="목록 갱신 확인 시각">
+          <span class="sync-pulse"></span>
+          <span id="last-sync-time">확인: --:--:--</span>
+        </div>
 
         <div class="control-divider"></div>
 
@@ -876,8 +914,11 @@
 
       const refreshBtn = document.getElementById('btn-manual-refresh');
       const refreshText = document.getElementById('refresh-btn-text');
+      const syncTimeEl = document.getElementById('last-sync-time');
+      const syncBadge = document.getElementById('last-sync-badge');
+
       if (refreshBtn) refreshBtn.classList.add('spinning');
-      if (isManual && refreshText) refreshText.textContent = '갱신 중...';
+      if (isManual && refreshText) refreshText.textContent = '확인 중...';
 
       try {
         const cleanUrl = window.location.href.split('?')[0].split('#')[0];
@@ -897,13 +938,10 @@
         const curTotal = document.getElementById('total-reports');
         const curUpdated = document.getElementById('last-updated');
 
+        // 목록 내용이 변경되었을 때 조용히 업데이트 (불필요한 팝업 알림 없음)
         if (newList && curList) {
-          const isChanged = curList.innerHTML.trim() !== newList.innerHTML.trim();
-          if (isChanged) {
+          if (curList.innerHTML.trim() !== newList.innerHTML.trim()) {
             curList.innerHTML = newList.innerHTML;
-            showToast('🔔 새로운 보고서가 업데이트되었습니다!');
-          } else if (isManual) {
-            showToast('✓ 최신 보고서 목록입니다.');
           }
         }
 
@@ -913,15 +951,42 @@
         if (newUpdated && curUpdated && curUpdated.textContent !== newUpdated.textContent) {
           curUpdated.textContent = newUpdated.textContent;
         }
+
+        // 실시간 확인 시각 (초 단위) 갱신 & 시각적 플래시 효과
+        if (syncTimeEl) {
+          const now = new Date();
+          const timeStr = String(now.getHours()).padStart(2, '0') + ':' +
+                          String(now.getMinutes()).padStart(2, '0') + ':' +
+                          String(now.getSeconds()).padStart(2, '0');
+          syncTimeEl.textContent = '확인: ' + timeStr;
+        }
+        if (syncBadge) {
+          syncBadge.classList.add('flash');
+          setTimeout(function() {
+            syncBadge.classList.remove('flash');
+          }, 400);
+        }
+
+        if (isManual && refreshText) {
+          refreshText.textContent = '✓ 갱신 완료';
+          setTimeout(function() {
+            refreshText.textContent = '새로고침';
+          }, 1200);
+        }
       } catch (err) {
         console.warn('[Report Hub] 새로고침 실패:', err);
-        if (isManual) {
-          showToast('⚠️ 목록 갱신에 실패했습니다. (네트워크 확인)');
+        if (isManual && refreshText) {
+          refreshText.textContent = '⚠️ 갱신 실패';
+          setTimeout(function() {
+            refreshText.textContent = '새로고침';
+          }, 1500);
         }
       } finally {
         isFetching = false;
         if (refreshBtn) refreshBtn.classList.remove('spinning');
-        if (refreshText) refreshText.textContent = '새로고침';
+        if (!isManual && refreshText && refreshText.textContent !== '✓ 갱신 완료') {
+          refreshText.textContent = '새로고침';
+        }
       }
     }
 
@@ -941,12 +1006,11 @@
 
       if (isAutoRefreshEnabled) {
         startAutoRefresh();
-        showToast('자동 갱신 주기가 ' + sec + '초로 변경되었습니다.');
       }
     }
 
     // 자동 새로고침 토글 (ON / OFF)
-    function toggleAutoRefresh(enabled, silent = false) {
+    function toggleAutoRefresh(enabled) {
       isAutoRefreshEnabled = enabled;
       localStorage.setItem('report_hub_auto_refresh', enabled ? 'true' : 'false');
 
@@ -964,10 +1028,10 @@
 
       if (enabled) {
         startAutoRefresh();
-        if (!silent) showToast('자동 새로고침이 켜졌습니다 (' + refreshIntervalSec + '초 주기)');
+        // 켜자마자 즉시 1회 확인
+        fetchReportList(false);
       } else {
         stopAutoRefresh();
-        if (!silent) showToast('자동 새로고침이 꺼졌습니다');
       }
     }
 
@@ -1000,13 +1064,23 @@
         }
       });
 
+      // 초기 확인 시각 표시
+      const syncTimeEl = document.getElementById('last-sync-time');
+      if (syncTimeEl) {
+        const now = new Date();
+        const timeStr = String(now.getHours()).padStart(2, '0') + ':' +
+                        String(now.getMinutes()).padStart(2, '0') + ':' +
+                        String(now.getSeconds()).padStart(2, '0');
+        syncTimeEl.textContent = '확인: ' + timeStr;
+      }
+
       // 토글 상태 복원
       const toggleInput = document.getElementById('auto-refresh-toggle');
       if (toggleInput) {
         toggleInput.checked = isAutoRefreshEnabled;
       }
       if (isAutoRefreshEnabled) {
-        toggleAutoRefresh(true, true);
+        toggleAutoRefresh(true);
       }
     })();
   </script>
