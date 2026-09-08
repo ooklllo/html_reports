@@ -82,15 +82,47 @@ try {
         Write-Host "   -> 새로 추가되거나 삭제된 보고서가 없습니다. (전체 목록 동기화 진행)" -ForegroundColor Gray
     }
 
-    Write-Host "[3/6] index.html 보고서 목록 갱신 (최신순 정렬)..." -ForegroundColor Cyan
+    Write-Host "[3/6] index.html 보고서 목록 갱신 (GitHub 배포 최신순 정렬)..." -ForegroundColor Cyan
 
-    # 최신 수정 시간(LastWriteTime) 내림차순 정렬
-    $sortedFiles = $htmlFiles | Sort-Object LastWriteTime -Descending
+    $nowDateTime = Get-Date
 
-    $cardsHtml = ""
-    $isFirst = $true
+    # Git 이력에서 모든 파일의 최신 커밋 일시를 단 1회 호출로 일괄 수집 (해시테이블 캐싱)
+    $commitDates = @{}
+    $gitLogLines = git log --name-only --format="DATE:%cd" --date=format:"%Y-%m-%d %H:%M:%S" 2>$null
+    $currentDate = ""
+    foreach ($line in $gitLogLines) {
+        if ($line.StartsWith("DATE:")) {
+            $currentDate = $line.Substring(5).Trim()
+        } elseif ($line.Trim() -ne "" -and -not $commitDates.ContainsKey($line.Trim())) {
+            $commitDates[$line.Trim()] = $currentDate
+        }
+    }
 
-    foreach ($file in $sortedFiles) {
+    # 각 보고서 파일별 정보 및 배포 일시 매핑
+    $reportItems = @()
+    foreach ($file in $htmlFiles) {
+        $isNewReport = ($uncommittedFiles -contains $file.Name)
+        $deployDateTime = $null
+        $dateStr = ""
+
+        if ($isNewReport) {
+            # 새로 추가/수정되어 이번에 배포되는 파일 -> 현재 배포 시각
+            $deployDateTime = $nowDateTime
+            $dateStr = $nowDateTime.ToString("yyyy-MM-dd HH:mm:ss")
+        } elseif ($commitDates.ContainsKey($file.Name)) {
+            # 이미 깃허브에 커밋된 파일 -> 캐시된 최신 커밋 일시 사용
+            $dateStr = $commitDates[$file.Name]
+            try {
+                $deployDateTime = [datetime]::ParseExact($dateStr, "yyyy-MM-dd HH:mm:ss", $null)
+            } catch {
+                $deployDateTime = $file.LastWriteTime
+            }
+        } else {
+            # git 이력이 없는 경우 로컬 파일 수정 시간 폴백
+            $deployDateTime = $file.LastWriteTime
+            $dateStr = $file.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
+        }
+
         # HTML 파일에서 <title> 추출
         $title = $file.BaseName
         try {
@@ -101,34 +133,46 @@ try {
             }
         } catch {}
 
-        $dateStr = $file.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
         $fileSizeKb = [Math]::Round($file.Length / 1KB, 1)
 
-        # 이번 배포에서 새로 추가/수정된 모든 보고서에 NEW 뱃지 부여
-        $isNewReport = ($uncommittedFiles -contains $file.Name)
-        $latestClass = if ($isNewReport) { " is-latest" } else { "" }
-        $badgeHtml = if ($isNewReport) { '<span class="badge-new">NEW</span>' } else { '' }
+        $reportItems += [PSCustomObject]@{
+            File           = $file
+            Name           = $file.Name
+            Title          = $title
+            FileSizeKb     = $fileSizeKb
+            DeployDateTime = $deployDateTime
+            DateStr        = $dateStr
+            IsNew          = $isNewReport
+        }
+    }
+
+    # GitHub 배포 일시 기준 내림차순(최신순) 정렬
+    $sortedReports = $reportItems | Sort-Object DeployDateTime -Descending
+
+    $cardsHtml = ""
+    foreach ($item in $sortedReports) {
+        $latestClass = if ($item.IsNew) { " is-latest" } else { "" }
+        $badgeHtml = if ($item.IsNew) { '<span class="badge-new">NEW</span>' } else { '' }
 
         $card = '      <div class="report-card' + $latestClass + '">' + "`n"
         $card += '        <div class="card-left">' + "`n"
         $card += '          <div class="card-meta">' + "`n"
         if ($badgeHtml) { $card += '            ' + $badgeHtml + "`n" }
-        $card += '            <span class="card-date">' + $dateStr + '</span>' + "`n"
-        $card += '            <span class="card-filename">' + $file.Name + ' (' + $fileSizeKb + 'KB)</span>' + "`n"
+        $card += '            <span class="card-date">' + $item.DateStr + '</span>' + "`n"
+        $card += '            <span class="card-filename">' + $item.Name + ' (' + $item.FileSizeKb + 'KB)</span>' + "`n"
         $card += '          </div>' + "`n"
-        $card += '          <div class="card-title">' + $title + '</div>' + "`n"
+        $card += '          <div class="card-title">' + $item.Title + '</div>' + "`n"
         $card += '        </div>' + "`n"
         $card += '        <div class="card-right">' + "`n"
-        $card += '          <button class="btn-copy" onclick="copyReportUrl(this, ''' + $file.Name + ''')">' + "`n"
+        $card += '          <button class="btn-copy" onclick="copyReportUrl(this, ''' + $item.Name + ''')">' + "`n"
         $card += '            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>' + "`n"
         $card += '            <span>주소 복사</span>' + "`n"
         $card += '          </button>' + "`n"
-        $card += '          <a href="' + $file.Name + '" class="btn-open">보고서 열기 →</a>' + "`n"
+        $card += '          <a href="' + $item.Name + '" class="btn-open">보고서 열기 →</a>' + "`n"
         $card += '        </div>' + "`n"
         $card += '      </div>' + "`n"
 
         $cardsHtml += $card
-        $isFirst = $false
     }
 
     # index.html 파일 읽기 및 영역 치환
@@ -136,7 +180,7 @@ try {
     if (Test-Path $indexPath) {
         $indexContent = Get-Content -Path $indexPath -Raw -Encoding UTF8
         $nowDate = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-        $totalCount = $sortedFiles.Count
+        $totalCount = $sortedReports.Count
 
         # 통계 영역 갱신
         $indexContent = [regex]::Replace($indexContent, 'id="total-reports">\d+<', "id=`"total-reports`">$totalCount<")
