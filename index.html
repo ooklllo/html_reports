@@ -683,7 +683,7 @@
       </p>
       <div class="stats-bar">
         <div class="stat-item">총 보고서 수: <strong id="total-reports">2</strong>개</div>
-        <div class="stat-item">최근 업데이트: <strong id="last-updated">2026-09-09 06:45:41</strong></div>
+        <div class="stat-item">최근 업데이트: <strong id="last-updated">2026-09-09 06:50:31</strong></div>
       </div>
     </header>
 
@@ -880,7 +880,8 @@
       if (isManual && refreshText) refreshText.textContent = '갱신 중...';
 
       try {
-        const fetchUrl = window.location.pathname + '?_t=' + Date.now();
+        const cleanUrl = window.location.href.split('?')[0].split('#')[0];
+        const fetchUrl = (cleanUrl.endsWith('/') ? cleanUrl + 'index.html' : cleanUrl) + '?_t=' + Date.now();
         const res = await fetch(fetchUrl, { cache: 'no-store' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
 
