@@ -100,13 +100,13 @@ try {
             }
         } catch {}
 
-        $dateStr = $file.LastWriteTime.ToString("yyyy-MM-dd")
+        $dateStr = $file.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
         $fileSizeKb = [Math]::Round($file.Length / 1KB, 1)
 
         $latestClass = if ($isFirst) { " is-latest" } else { "" }
         $badgeHtml = if ($isFirst) { '<span class="badge-new">NEW</span>' } else { '' }
 
-        $card = '      <a href="' + $file.Name + '" class="report-card' + $latestClass + '">' + "`n"
+        $card = '      <div class="report-card' + $latestClass + '">' + "`n"
         $card += '        <div class="card-left">' + "`n"
         $card += '          <div class="card-meta">' + "`n"
         if ($badgeHtml) { $card += '            ' + $badgeHtml + "`n" }
@@ -116,9 +116,13 @@ try {
         $card += '          <div class="card-title">' + $title + '</div>' + "`n"
         $card += '        </div>' + "`n"
         $card += '        <div class="card-right">' + "`n"
-        $card += '          <span class="btn-open">보고서 열기 →</span>' + "`n"
+        $card += '          <button class="btn-copy" onclick="copyReportUrl(this, ''' + $file.Name + ''')">' + "`n"
+        $card += '            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>' + "`n"
+        $card += '            <span>주소 복사</span>' + "`n"
+        $card += '          </button>' + "`n"
+        $card += '          <a href="' + $file.Name + '" class="btn-open">보고서 열기 →</a>' + "`n"
         $card += '        </div>' + "`n"
-        $card += '      </a>' + "`n"
+        $card += '      </div>' + "`n"
 
         $cardsHtml += $card
         $isFirst = $false
@@ -128,7 +132,7 @@ try {
     $indexPath = Join-Path $repoDir "index.html"
     if (Test-Path $indexPath) {
         $indexContent = Get-Content -Path $indexPath -Raw -Encoding UTF8
-        $nowDate = (Get-Date).ToString("yyyy-MM-dd")
+        $nowDate = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
         $totalCount = $sortedFiles.Count
 
         # 통계 영역 갱신
