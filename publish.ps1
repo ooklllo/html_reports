@@ -68,7 +68,8 @@ try {
         Write-Host "   -> 발견된 신규/수정 보고서 ($($uncommittedFiles.Count)개):" -ForegroundColor Green
         foreach ($f in $uncommittedFiles) {
             Write-Host "      * $f" -ForegroundColor Green
-            $newReportUrls += "$baseUrl/$f"
+            $cleanName = $f -replace '\.html$', ''
+            $newReportUrls += "$baseUrl/$cleanName"
         }
     }
     if ($deletedFiles.Count -gt 0) {
