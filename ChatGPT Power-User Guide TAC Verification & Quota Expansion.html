@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT 필쫀쿠 및 데블(TAC) 연동 가이드 보고서</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-green: #10b981;
+      --accent-blue: #38bdf8;
+      --accent-purple: #a855f7;
+      --border-color: #334155;
+      --tag-bg: rgba(56, 189, 248, 0.1);
+      --tag-border: rgba(56, 189, 248, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.65;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      color: var(--accent-blue);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .description {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .section {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    p {
+      margin-bottom: 0.75rem;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    li::before {
+      content: "•";
+      position: absolute;
+      left: 0.25rem;
+      color: var(--accent-blue);
+      font-weight: bold;
+    }
+
+    .highlight {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    .highlight-purple {
+      color: var(--accent-purple);
+      font-weight: 600;
+    }
+
+    .summary-box {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .summary-box strong {
+      color: var(--accent-green);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <span class="badge">Architecture & Summary Report</span>
+      <h1>ChatGPT '필쫀쿠' 및 '데블(TAC)' 세팅 가이드</h1>
+      <p class="description">계정 인증 자격, 진행 순서, 할당량 적용 메커니즘 및 업무 자동화 환경 최적화 분석</p>
+    </header>
+
+    <!-- 섹션 1: 핵심 용어 및 개념 -->
+    <div class="section">
+      <h2>1. 핵심 용어 및 구조 정의</h2>
+      <ul>
+        <li><strong class="highlight">필쫀쿠</strong>: 필리핀 리전 현지화 결제 우회를 통해 고성능 플랜(Pro 20x 등)을 정가 대비 합리적인 가격에 구독하는 방식.</li>
+        <li><strong class="highlight-purple">데블 (Developer / TAC 인증)</strong>: 개발자 플랫폼을 통한 본인 확인(KYC) 및 신뢰도 등록 절차(Trusted Access).</li>
+        <li><strong>목적과 시너지</strong>: 필쫀쿠를 통한 구독 기반 위에 데블(TAC) 신원 인증을 결합하여 <strong>가장 비용 효율적으로 최대치의 계정 한도를 확보</strong>하는 세팅.</li>
+      </ul>
+    </div>
+
+    <!-- 섹션 2: 세팅 3대 핵심 질의 검증 -->
+    <div class="section">
+      <h2>2. 계정 세팅 3대 핵심 기준 검증</h2>
+      
+      <h3>① 신청 자격 요건</h3>
+      <p><strong>결론: 성인 개인 신분증만으로 누구나 신청 가능</strong></p>
+      <ul>
+        <li>실제 전문 코딩 지식이나 개발자 자격증, 사업자등록증이 전혀 필요하지 않습니다.</li>
+        <li>주민등록증, 운전면허증, 여권 등 유효한 개인 신분증 인증(KYC) 절차를 거치면 개인 자격으로 즉시 통과됩니다.</li>
+      </ul>
+
+      <h3>② 최적의 진행 순서</h3>
+      <p><strong>결론: TAC (신원/약관 인증) 선진행 권장</strong></p>
+      <ul>
+        <li>필수 순서가 고정된 것은 아니나, 계정에 <strong>신뢰도(신원 검증)를 먼저 확보</strong>한 후 우회 결제(필쫀쿠)를 붙이는 것이 가장 안전합니다.</li>
+      </ul>
+
+      <h3>③ 계정 및 국가 불일치 리스크</h3>
+      <p><strong>결론: 제재 리스크 없음</strong></p>
+      <ul>
+        <li>결제 리전(필리핀)과 본인 인증 신분증(한국)의 국가 차이로 인해 기존 계정 이용 내역이 소급 회수되거나 즉시 계정이 정지될 위험은 극히 낮습니다.</li>
+      </ul>
+    </div>
+
+    <!-- 섹션 3: 할당량 메커니즘 -->
+    <div class="section">
+      <h2>3. 할당량(Quota) 작동 메커니즘</h2>
+      <p>데블(TAC) 인증 완료 시 부여되는 혜택의 실질적인 범위는 다음과 같습니다.</p>
+      <ul>
+        <li><strong>주간·월간 할당량 확장</strong>: 단순 외부 API뿐만 아니라, <span class="highlight">공식 웹/앱 환경에서의 주간·월간 코덱스 및 고지능 추론 모델 사용량 한도(캡)가 상향</span>됩니다.</li>
+        <li><strong>신뢰 계정 분류</strong>: 인증 계정은 악성 봇·스팸 방지용으로 적용되는 조기 락(Lock)이 해제되어 장시간 세션 유지에 유리합니다.</li>
+        <li><strong>다중 파이프라인 확보</strong>: 웹/앱 주간 한도 외에도 비상 시 외부 툴을 통해 즉시 가동할 수 있는 종량제 API 라인이 동시에 개방됩니다.</li>
+      </ul>
+    </div>
+
+    <!-- 섹션 4: 업무 자동화 환경 적합성 -->
+    <div class="section">
+      <h2>4. 업무 자동화 및 코덱스 활용 가이드</h2>
+      <p>코덱스 앱 및 데스크톱 앱의 '워크 모드(Work with Apps)'를 통한 업무 자동화를 계획 중인 유저의 경우:</p>
+      <ul>
+        <li><strong>토큰 소모 특성</strong>: 워크 모드 자동화는 방대한 에디터 파일 파싱과 반복 추론으로 인해 일반 대화보다 주간 할당량을 수 배 빠르게 소진합니다.</li>
+        <li><strong>최종 판정 (<span class="highlight">신청 권장</span>)</strong>: 데블(TAC) 인증을 완료해 두어야 주간 한도 도달로 인한 업무 중단을 최소화할 수 있으므로, <strong>업무 자동화 헤비 유저에게 인증은 필수적인 절차</strong>입니다.</li>
+      </ul>
+
+      <div class="summary-box">
+        <strong>💡 최종 요약 로드맵</strong>
+        <p style="margin-top: 0.5rem; margin-bottom: 0;">
+          <strong>개인 신분증으로 TAC/데블 인증 완료 (계정 신뢰도 및 할당량 상향)</strong> → <strong>필쫀쿠 요금제 세팅 (저비용 대용량 구독)</strong> 순으로 진행하여 끊김 없는 업무 자동화 환경을 구축하는 것이 가장 이상적입니다.
+        </p>
+      </div>
+    </div>
+
+    <footer>
+      <p>Verified Intelligence Report • Dark Mode Template</p>
+    </footer>
+  </div>
+
+</body>
+</html>
