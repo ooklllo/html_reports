@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatGPT Pro $200 사용 가이드 + 사용량</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#090b0e; --panel:#11151a; --panel2:#171c22; --text:#f4f7fa;
+      --muted:#9aa5b1; --line:#26303a; --blue:#7dd3fc; --purple:#c4b5fd;
+      --green:#86efac; --yellow:#fde68a; --red:#fca5a5;
+      --shadow:0 12px 34px rgba(0,0,0,.28); --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--text);
+      font-family:Inter,Pretendard,"Noto Sans KR",system-ui,-apple-system,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 90% 0,rgba(167,139,250,.10),transparent 28%),
+        radial-gradient(circle at 5% 10%,rgba(125,211,252,.07),transparent 24%),
+        var(--bg);
+      line-height:1.55;
+    }
+    .wrap{max-width:1240px;margin:auto;padding:46px 22px 64px}
+    .hero,.card{
+      border:1px solid var(--line); background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--panel);
+      border-radius:var(--r); box-shadow:var(--shadow);
+    }
+    .hero{padding:32px;display:grid;grid-template-columns:1.35fr .65fr;gap:24px}
+    .eyebrow{font-size:12px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:var(--blue)}
+    h1{font-size:clamp(34px,5vw,58px);letter-spacing:-.045em;line-height:1.03;margin:8px 0 12px}
+    .lead{color:var(--muted);font-size:17px;margin:0;max-width:780px}
+    .hero-side{display:flex;flex-direction:column;gap:10px;justify-content:center}
+    .rule{padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);font-weight:800}
+    .rule b{color:var(--blue)}
+    .section-title{margin:30px 2px 12px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#788592;font-weight:900}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .card{padding:22px}
+    .card h2{margin:0 0 13px;font-size:21px;letter-spacing:-.02em}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:12px;font-weight:900;margin-bottom:11px}
+    .blue{color:var(--blue)} .purple{color:var(--purple)} .green{color:var(--green)} .yellow{color:var(--yellow)}
+    .big{font-size:32px;font-weight:900;letter-spacing:-.035em;line-height:1.1;margin:3px 0 7px}
+    .small{font-size:13px;color:var(--muted)}
+    table{width:100%;border-collapse:collapse;background:var(--panel2);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+    th,td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+    th{font-size:12px;color:#cbd4dc;background:#141a20}
+    td{font-size:13.5px;color:#d8dee4}
+    tr:last-child td{border-bottom:0}
+    .mode{font-weight:900;color:#fff;white-space:nowrap}
+    .meter{margin-top:14px;display:grid;gap:9px}
+    .meter-row{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;font-size:13px}
+    .bar{height:9px;background:#202730;border-radius:999px;overflow:hidden}
+    .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#c4b5fd)}
+    .note{margin-top:14px;padding:14px 15px;border:1px solid rgba(125,211,252,.22);border-radius:13px;background:rgba(125,211,252,.045);font-size:13px;color:#dceaf2}
+    .warning{border-color:rgba(253,230,138,.22);background:rgba(253,230,138,.04);color:#eee7c6}
+    .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+    .pill{padding:8px 11px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;font-weight:850;font-size:13px}
+    .arrow{color:#5f6a75;font-weight:900}
+    .tips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .tip{padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--panel2)}
+    .tip b{display:block;margin-bottom:4px}
+    .tip span{font-size:13px;color:var(--muted)}
+    .source{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:#77828d;font-size:12px}
+    .source a{color:#9dcbea;text-decoration:none}
+    @media(max-width:930px){.hero,.grid2,.grid3{grid-template-columns:1fr}.tips{grid-template-columns:1fr}}
+    @media(max-width:620px){.wrap{padding:22px 12px 40px}.hero,.card{padding:18px}.meter-row{grid-template-columns:90px 1fr auto}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">ChatGPT Pro · $200 · 2026-09 기준</div>
+      <h1>사용 가이드 + 사용량</h1>
+      <p class="lead">
+        평소에는 <b>GPT-5.6 Medium</b>을 기본값으로 사용하고, 어려워질 때만 추론 강도나 Pro 모델을 올리는 방식.
+        Work/Codex는 실제 멀티스텝 작업을 시킬 때 사용하는 것이 효율적입니다.
+      </p>
+    </div>
+    <div class="hero-side">
+      <div class="rule"><b>생각 / 질문</b> → Chat</div>
+      <div class="rule"><b>깊은 조사</b> → Deep Research</div>
+      <div class="rule"><b>실제 업무 수행</b> → Work / Codex</div>
+    </div>
+  </section>
+
+  <div class="section-title">01 · Pro $200 핵심 사용량</div>
+  <section class="grid3">
+    <article class="card">
+      <div class="badge blue">GPT-6 Pro · Chat</div>
+      <div class="big">200회 / 주</div>
+      <div class="small">일평균으로 단순 환산하면 약 28.6회. 실제 제한은 주간 기준.</div>
+      <div class="meter">
+        <div class="meter-row"><span>하루 10회</span><div class="bar"><div class="fill" style="width:35%"></div></div><b>여유</b></div>
+        <div class="meter-row"><span>하루 20회</span><div class="bar"><div class="fill" style="width:70%"></div></div><b>안정적</b></div>
+        <div class="meter-row"><span>하루 28회</span><div class="bar"><div class="fill" style="width:98%"></div></div><b>주간 근접</b></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="badge purple">GPT-5.6 Sol Pro · Chat</div>
+      <div class="big">170회 / 일</div>
+      <div class="small">GPT-6 Pro + Sol Pro를 합친 일일 상한은 200회.</div>
+      <div class="note">
+        예: Sol Pro 160회 + GPT-6 Pro 40회 = <b>합산 200회</b>에 도달.
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="badge green">일반 GPT-5.6</div>
+      <div class="big">Pro: 사실상 주력</div>
+      <div class="small">공식 가격 안내에서는 GPT-5.6 및 파일 업로드를 unlimited로 설명하며 abuse guardrails가 적용됩니다.</div>
+      <div class="note">
+        현재처럼 <b>5.6 Medium</b>을 평소 채팅 기본값으로 두는 것이 좋은 운영 방식입니다.
+      </div>
+    </article>
+  </section>
+
+  <div class="section-title">02 · Work + Codex 공유 사용량 · Pro 20×</div>
+  <section class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Work / Codex 모델</th>
+          <th>Pro $200 · 5시간당 공식 예상 로컬 메시지</th>
+          <th>추천 역할</th>
+          <th>사용량 체감</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="mode">GPT-5.6 Luna</td><td><b>5,000 ~ 40,000</b></td><td>루틴·반복·가벼운 작업</td><td>가장 경제적</td></tr>
+        <tr><td class="mode">GPT-5.6 Terra</td><td><b>500 ~ 4,000</b></td><td>일반 실무</td><td>경제적</td></tr>
+        <tr><td class="mode">GPT-5.6 Sol</td><td><b>200 ~ 2,000</b></td><td>복잡한 구현·분석</td><td>중~높음</td></tr>
+        <tr><td class="mode">GPT-6 Astra</td><td><b>100 ~ 900</b></td><td>최고난도 에이전트 작업</td><td>가장 비쌈</td></tr>
+      </tbody>
+    </table>
+    <div class="note warning">
+      <b>고정 메시지 한도가 아닙니다.</b> 작업 크기, 컨텍스트, 모델과 설정에 따라 실제 소비량이 달라지며,
+      5시간 한도와 별도로 <b>주간 사용량 한도</b>도 적용될 수 있습니다. 실제 잔여량은 Settings → Usage가 기준입니다.
+    </div>
+  </section>
+
+  <div class="section-title">03 · 무엇을 어디서 할까?</div>
+  <section class="grid2">
+    <article class="card">
+      <div class="badge blue">Chat 모델 선택</div>
+      <h2>평소 → 어려울 때만 승급</h2>
+      <table>
+        <tbody>
+          <tr><td>일상 질문·번역·짧은 요약</td><td class="mode">Instant</td></tr>
+          <tr><td>대부분의 일반 대화·검색·분석</td><td class="mode">5.6 Medium ★</td></tr>
+          <tr><td>복잡한 논리·디버깅</td><td class="mode">High</td></tr>
+          <tr><td>매우 어려운 추론</td><td class="mode">Extra High</td></tr>
+          <tr><td>실패 비용 큰 핵심 문제</td><td class="mode">Sol Pro</td></tr>
+          <tr><td>최고 난도</td><td class="mode">GPT-6 Pro</td></tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="card">
+      <div class="badge purple">작업 유형</div>
+      <h2>도구 선택</h2>
+      <table>
+        <tbody>
+          <tr><td>최신 정보 확인</td><td class="mode">Chat + Web</td></tr>
+          <tr><td>많은 출처를 종합한 조사</td><td class="mode">Deep Research</td></tr>
+          <tr><td>PDF·CSV·Excel 단순 분석</td><td class="mode">Chat + 파일</td></tr>
+          <tr><td>여러 파일 → 조사 → 결과물</td><td class="mode">Work</td></tr>
+          <tr><td>코드 설명·짧은 코드 작성</td><td class="mode">Chat</td></tr>
+          <tr><td>Repo 탐색·수정·테스트</td><td class="mode">Codex</td></tr>
+          <tr><td>웹/앱 여러 단계 조작</td><td class="mode">Work</td></tr>
+        </tbody>
+      </table>
+    </article>
+  </section>
+
+  <div class="section-title">04 · 가장 효율적인 운영법</div>
+  <section class="card">
+    <div class="tips">
+      <div class="tip"><b>① 5.6 Medium 기본</b><span>지금 사용 방식 그대로. 대부분의 일상 질문은 여기에서 해결.</span></div>
+      <div class="tip"><b>② Pro 모델은 어려울 때</b><span>GPT-6 Pro는 특히 200회/주이므로 핵심 문제에 집중.</span></div>
+      <div class="tip"><b>③ Work/Codex는 실제 행동용</b><span>단순 질문을 Work에서 하면 공유 agentic allowance가 아까움.</span></div>
+    </div>
+    <div class="flow" style="margin-top:16px">
+      <span class="pill">5.6 Medium</span><span class="arrow">→</span>
+      <span class="pill">High</span><span class="arrow">→</span>
+      <span class="pill">Extra High</span><span class="arrow">→</span>
+      <span class="pill">Sol Pro</span><span class="arrow">→</span>
+      <span class="pill">GPT-6 Pro</span>
+    </div>
+    <div class="flow" style="margin-top:10px">
+      <span class="pill">Work/Codex: Luna</span><span class="arrow">→</span>
+      <span class="pill">Terra</span><span class="arrow">→</span>
+      <span class="pill">Sol</span><span class="arrow">→</span>
+      <span class="pill">Astra</span>
+    </div>
+  </section>
+
+  <div class="source">
+    최신 기준: 2026-09-09. 공식 OpenAI Help Center / Codex pricing 기준.
+    <br>
+    <a href="https://help.openai.com/en/articles/20001354-gpt-56-and-gpt-6-pro-in-chatgpt">GPT-5.6 & GPT-6 Pro limits</a>
+    ·
+    <a href="https://help.openai.com/en/articles/20001516-managing-usage-with-gpt-6-astra-in-work-and-codex">Work & Codex usage</a>
+    ·
+    <a href="https://chatgpt.com/codex/pricing/">Codex pricing</a>
+  </div>
+
+</main>
+</body>
+</html>
